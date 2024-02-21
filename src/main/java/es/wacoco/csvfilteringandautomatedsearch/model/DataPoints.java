@@ -1,4 +1,4 @@
-package es.wacoco.csvfilteringandautomatedsearch.modal;
+package es.wacoco.csvfilteringandautomatedsearch.model;
 
 public class DataPoints {
 
