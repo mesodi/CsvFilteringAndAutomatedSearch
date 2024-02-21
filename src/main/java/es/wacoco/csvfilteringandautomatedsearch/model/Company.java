@@ -8,11 +8,11 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class Company {
-
     private String inventors;
     private String applicationDate;
     private String applicationNumber;
-    private String applicant;
+    private Applicant applicant;
     private String title;
     private String abstractText;
+
 }
