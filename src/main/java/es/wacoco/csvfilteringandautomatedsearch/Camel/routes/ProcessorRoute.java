@@ -8,18 +8,18 @@ public class ProcessorRoute extends RouteBuilder {
     public void configure() throws Exception {
 
         from("direct:processorManager")
-                .process(new FilterCsvRoute())
+                .process(new FilterCsvRouteProcessor())
 
-                .process(new CountApplicantRoute())
+                .process(new CountApplicantProcessor())
 
-                .process(new LinkedInUrlFinderRoute())
+                .process(new LinkedInUrlFinderProcessor())
 
-                .process(new WebsiteUrlFinderRoute())
+                .process(new WebsiteUrlFinderProcessor())
 
-                .process(new EmailExtractorRoute());
+                .process(new EmailExtractorProcessor());
 
 
         from("direct:exportLinkedinUrlAsCsvRoute")
-                .process(new ExportLinkedinRoute());
+                .process(new ExportLinkedinUrlAsCsvProcessor());
     }
 }

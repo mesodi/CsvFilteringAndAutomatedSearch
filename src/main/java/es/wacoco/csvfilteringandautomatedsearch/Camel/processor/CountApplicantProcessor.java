@@ -2,11 +2,10 @@ package es.wacoco.csvfilteringandautomatedsearch.Camel.processor;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
-import org.springframework.web.multipart.MultipartFile;
 
-public class FilterCsvRoute implements Processor {
+public class CountApplicantProcessor implements Processor {
     @Override
     public void process(Exchange exchange) throws Exception {
-        MultipartFile file = exchange.getIn().getBody(MultipartFile.class);
+
     }
 }
