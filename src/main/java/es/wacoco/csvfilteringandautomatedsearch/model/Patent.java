@@ -1,5 +1,12 @@
 package es.wacoco.csvfilteringandautomatedsearch.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+@AllArgsConstructor
 public class Patent {
     private String applicant;
     private String inventors;
