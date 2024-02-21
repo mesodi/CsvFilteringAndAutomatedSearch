@@ -4,15 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @AllArgsConstructor
 public class Company {
-    private String inventors;
-    private String applicationDate;
-    private String applicationNumber;
-    private Applicant applicant;
-    private String title;
-    private String abstractText;
-
+    String applicant;
+    String appearances;
+    List<Patent> patents;
 }
