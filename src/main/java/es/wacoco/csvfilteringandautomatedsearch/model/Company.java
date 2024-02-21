@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class DataPoints {
+public class Company {
 
     private String inventors;
     private String applicationDate;
