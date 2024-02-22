@@ -11,16 +11,12 @@ public class ProcessorRoute extends RouteBuilder {
                 .process(new FilterCsvProcessor())
                 .process(new CountApplicantProcessor());
 
-
         from("direct:processorManager")
                 .process(new LinkedInUrlFinderProcessor())
-
                 .process(new WebsiteUrlFinderProcessor())
-
                 .process(new EmailExtractorProcessor());
 
         from("direct:exportLinkedinUrlAsCsvRoute")
                 .process(new ExportLinkedinUrlAsCsvProcessor());
     }
-
 }
