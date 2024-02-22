@@ -13,4 +13,7 @@ public class Company {
     String applicant;
     String appearances;
     List<Patent> patents;
+    public Company(String applicant) {
+    }
+
 }
