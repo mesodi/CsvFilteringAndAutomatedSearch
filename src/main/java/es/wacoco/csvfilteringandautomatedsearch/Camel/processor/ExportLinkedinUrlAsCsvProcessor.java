@@ -22,10 +22,10 @@ public class ExportLinkedinUrlAsCsvProcessor implements Processor {
         inventorUrls.add(new InventorUrl( "Example-3", "https://example.com/page3"));
 
         StringBuilder csvData = new StringBuilder();
-        for (InventorUrl url : inventorUrls) {
+        for (InventorUrl inventorUrl : inventorUrls) {
 
-            String inventor = url.getInventor();
-            String linkedInUrl = url.getLinkedInUrl();
+            String inventor = inventorUrl.getInventor();
+            String linkedInUrl = inventorUrl.getLinkedInUrl();
 
             csvData.append(inventor).append(",").append(linkedInUrl).append("\n");
         }
