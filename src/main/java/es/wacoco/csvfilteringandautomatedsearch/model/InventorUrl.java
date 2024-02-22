@@ -1,2 +1,7 @@
-package es.wacoco.csvfilteringandautomatedsearch.model;public class InventorUrl {
+package es.wacoco.csvfilteringandautomatedsearch.model;
+
+public class InventorUrl {
+    String inventor;
+    String linkedInUrl;
+
 }

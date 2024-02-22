@@ -1,2 +1,5 @@
-package es.wacoco.csvfilteringandautomatedsearch.service;public class DatabaseService {
+package es.wacoco.csvfilteringandautomatedsearch.service;
+
+public class DatabaseService {
+
 }

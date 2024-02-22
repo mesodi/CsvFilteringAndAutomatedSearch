@@ -1,2 +1,5 @@
-package es.wacoco.csvfilteringandautomatedsearch.Camel.database;public class database {
+package es.wacoco.csvfilteringandautomatedsearch.Camel.database;
+
+public class database {
+
 }
