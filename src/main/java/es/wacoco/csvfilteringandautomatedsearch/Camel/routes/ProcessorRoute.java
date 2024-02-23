@@ -14,6 +14,7 @@ public class ProcessorRoute extends RouteBuilder {
                 .process(new CountApplicantProcessor());
 
         from("direct:processorManager")
+                .process(new CreateJobProcessor())
                 .process(new LinkedInUrlFinderProcessor())
                 .process(new WebsiteUrlFinderProcessor())
                 .process(new EmailExtractorProcessor());
@@ -21,5 +22,5 @@ public class ProcessorRoute extends RouteBuilder {
 
         from("direct:exportLinkedinUrlAsCsvRoute")
                 .process(new ExportLinkedinUrlAsCsvProcessor());
-    }
+     }
 }

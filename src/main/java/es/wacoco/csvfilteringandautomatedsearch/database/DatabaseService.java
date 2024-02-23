@@ -12,7 +12,6 @@ public class DatabaseService {
     public void removeCompany(Company company) {
         ChosenCompanies.removeCompany(company);
     }
-
     public List<Company> getChosenCompanies() {
         return ChosenCompanies.getChosenCompanies();
     }
