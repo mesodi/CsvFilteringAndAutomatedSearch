@@ -12,4 +12,5 @@ public class CreateJobProcessor implements Processor {
         List<Company> companies = exchange.getIn().getBody(List.class);
 
     }
+
 }

@@ -1,5 +1,6 @@
 package es.wacoco.csvfilteringandautomatedsearch.Camel.database;
 
+import es.wacoco.csvfilteringandautomatedsearch.model.Company;
 import es.wacoco.csvfilteringandautomatedsearch.model.Job;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,7 +16,7 @@ public class Database {
 
     ArrayList<Job> jobDB = new ArrayList<>();
 
-    public void createJob(String jobID, ) {
-        jobDB.add(new Job(null, ));
+    public void createJob(String jobID, String dateCreated, String status, List<Company> companies) {
+        jobDB.add(new Job(jobID, dateCreated, status, companies));
     }
 }
