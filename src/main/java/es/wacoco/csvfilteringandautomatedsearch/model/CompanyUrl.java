@@ -4,13 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
-
 @Getter
 @Setter
 @AllArgsConstructor
-public class Company {
-    String applicant;
-    String appearances;
-    List<Patent> patents;
+public class CompanyUrl {
+    private String applicant_name;
+    private String applicant_website_url;
+    private String applicant_email;
 }
