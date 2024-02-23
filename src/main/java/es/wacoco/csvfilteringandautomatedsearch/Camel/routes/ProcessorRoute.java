@@ -9,6 +9,8 @@ public class ProcessorRoute extends RouteBuilder {
 
         from("direct:csvFilteringRoute")
                 .process(new FilterCsvProcessor())
+
+
                 .process(new CountApplicantProcessor());
 
         from("direct:processorManager")
@@ -16,6 +18,7 @@ public class ProcessorRoute extends RouteBuilder {
                 .process(new LinkedInUrlFinderProcessor())
                 .process(new WebsiteUrlFinderProcessor())
                 .process(new EmailExtractorProcessor());
+
 
         from("direct:exportLinkedinUrlAsCsvRoute")
                 .process(new ExportLinkedinUrlAsCsvProcessor());

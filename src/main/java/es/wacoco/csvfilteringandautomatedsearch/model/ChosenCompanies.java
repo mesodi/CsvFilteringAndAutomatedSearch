@@ -9,8 +9,6 @@ import java.util.List;
 @Getter
 @Setter
 @AllArgsConstructor
-public class Company {
-    String applicant;
-    List<Patent> patents;
-    List<InventorUrl> inventorUrls;
+public class ChosenCompanies {
+    private List<Company> companyList;
 }
