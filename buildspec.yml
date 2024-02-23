@@ -11,10 +11,8 @@ phases:
   build:
     commands:
       - mvn clean
+      - mvn test
       - echo Building Docker image
-      - docker build -t johnnie3000/camelsearch:camelsearch .
-      - docker push docker.io/johnnie3000/camelsearch:camelsearch
-      - docker push $REPOSITORY_URI --all-tags
   post_build:
     commands:
       - echo Build completed on `date`
