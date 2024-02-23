@@ -1,0 +1,21 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - echo Logging in to Docker Hub
+      - echo $DOCKERHUB_PASSWORD | docker login -u $DOCKERHUB_USERNAME --password-stdin || exit 1
+
+  build:
+    commands:
+      - echo Running tests
+      - mvn test || exit 1
+      - echo Building Docker image
+      - mvn clean package || exit 1
+      - docker build -t merum/automated-search:$IMAGE_TAG . || exit 1
+      - echo Pushing Docker image
+      - docker push merum/automated-search:$IMAGE_TAG || exit 1
+
+post_build:
+  commands:
+    - echo Build and push completed on `date`
