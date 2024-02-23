@@ -10,7 +10,7 @@ phases:
       - REPOSITORY_URI=johnnie3000/camelsearch
   build:
     commands:
-      - mvn clean install
+      - mvn clean
       - echo Building Docker image
       - docker build -t johnnie3000/camelsearch:camelsearch .
       - docker push docker.io/johnnie3000/camelsearch:camelsearch
