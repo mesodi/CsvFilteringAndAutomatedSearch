@@ -10,7 +10,6 @@ phases:
     commands:
       - echo Running tests
       - mvn test
-
       - echo Building Docker image
       - mvn clean package
       - docker build -t merum/automated-search:$IMAGE_TAG
