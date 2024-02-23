@@ -11,9 +11,6 @@ import java.util.List;
 @AllArgsConstructor
 public class Company {
     String applicant;
-    String appearances;
     List<Patent> patents;
-    public Company(String applicant) {
-    }
-
+    List<InventorUrl> inventorUrls;
 }
