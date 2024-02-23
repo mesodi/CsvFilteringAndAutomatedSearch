@@ -3,19 +3,19 @@ version: 0.2
 phases:
   pre_build:
     commands:
-      - echo Logging in to Docker Hub
-      - echo $DOCKERHUB_PASSWORD | docker login -u $DOCKERHUB_USERNAME --password-stdin
 
+      - echo Logging in to DockerHub
+      - aws --version
+      - docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
+      - REPOSITORY_URI=johnnie3000/camelsearch
   build:
     commands:
-      - echo Running tests
-      - mvn clean
+      - mvn clean install
       - echo Building Docker image
-      - mvn clean package
-      - docker build -t merum/automated-search:$IMAGE_TAG
-      - echo Pushing Docker image
-      - docker push merum/automated-search:$IMAGE_TAG
+      - docker build -t johnnie3000/camelsearch:camelsearch .
+      - docker push docker.io/johnnie3000/camelsearch:camelsearch
+      - docker push $REPOSITORY_URI --all-tags
 
-post_build:
-  commands:
-    - echo Build and push completed on `date`
+  post_build:
+    commands:
+      - echo Build completed on `date`
