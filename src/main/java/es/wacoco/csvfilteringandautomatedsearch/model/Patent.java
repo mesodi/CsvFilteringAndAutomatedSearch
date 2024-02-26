@@ -9,7 +9,6 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class Patent {
-    private String applicant;
     private String inventors;
     private String applicationDate;
     private String applicationNumber;

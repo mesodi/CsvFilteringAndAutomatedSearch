@@ -11,6 +11,8 @@ import java.util.List;
 @AllArgsConstructor
 public class Company {
     String applicant;
+    String websiteUrl;
     List<Patent> patents;
     List<InventorUrl> inventorUrls;
+
 }
