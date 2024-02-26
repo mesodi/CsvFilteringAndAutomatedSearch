@@ -17,4 +17,7 @@ public class Database {
     public void createJob(Job job) {
         jobDB.add(job);
     }
+    public List<Job> getJobDB() {
+        return jobDB;
+    }
 }
