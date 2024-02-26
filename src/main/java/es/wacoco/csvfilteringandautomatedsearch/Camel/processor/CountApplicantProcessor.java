@@ -13,17 +13,6 @@ public class CountApplicantProcessor implements Processor {
 
     @Override
     public void process(Exchange exchange) throws Exception {
-        MultipartFile file = exchange.getIn().getBody(MultipartFile.class);
-        int applicantCount = 0;
 
-        CSVParser csvParser = new CSVParser(new InputStreamReader(file.getInputStream()),
-                CSVFormat.DEFAULT.withFirstRecordAsHeader().withIgnoreHeaderCase().withTrim());
-        for (CSVRecord csvRecord : csvParser) {
-            // Assuming 'applicant' is the field representing applicants
-            if (csvRecord.isMapped("applicant")) {
-                applicantCount++;
-            }
-        }
-        exchange.getMessage().setBody(applicantCount);
     }
 }
