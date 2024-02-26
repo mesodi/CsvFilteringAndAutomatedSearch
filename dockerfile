@@ -10,7 +10,7 @@ COPY pom.xml .
 # Kopiera källkoden
 COPY src ./src
 
-# Bygg projektet
+# Bygg projektet och skapa JAR-filen
 RUN mvn package
 
 # Andra steget: Utvecklingssteget
@@ -20,8 +20,8 @@ FROM amazoncorretto:17-alpine
 WORKDIR /app/myapp
 
 # Kopiera JAR-filen som byggdes i det föregående steget till den aktuella mappen
-COPY --from=build /app/myapp/target/ROOT.jar app.jar
+# Se till att namnet på JAR-filen matchar det som genereras av Maven
+COPY --from=build /app/myapp/target/CsvFilteringAndAutomatedSearch-0.0.1-SNAPSHOT.jar app.jar
 
 # Definiera kommandot för att köra applikationen
 ENTRYPOINT ["java", "-jar", "app.jar"]
-
