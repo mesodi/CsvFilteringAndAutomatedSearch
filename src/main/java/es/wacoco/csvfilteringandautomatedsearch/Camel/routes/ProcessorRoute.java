@@ -8,9 +8,7 @@ public class ProcessorRoute extends RouteBuilder {
     public void configure() throws Exception {
 
         from("direct:csvFilteringRoute")
-                .process(new FilterCsvProcessor())
-                .process(new CountApplicantProcessor());
-
+                .process(new FilterCsvProcessor());
 
         from("direct:processorManager")
                 .process(new CreateJobProcessor())
