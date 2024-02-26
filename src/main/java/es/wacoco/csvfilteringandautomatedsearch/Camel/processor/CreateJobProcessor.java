@@ -23,13 +23,29 @@ public class CreateJobProcessor implements Processor {
         database.createJob(job);
         exchange.getIn().setBody(job);
     }
-    public static String generateUniqueID(){
 
-        String staticPart="QRY";
+    public String generateUniqueID() {
+        String staticPart = "QRY";
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
         Random random = new Random();
-        int randomPart=100000+random.nextInt(900000);
-        return staticPart+"-"+formatter+"-"+randomPart;
+        int randomPart = 100000 + random.nextInt(900000);
+        String generatedID = staticPart + "-" + formatter.format(now) + "-" + randomPart;
 
+        // Check if the generated ID already exists in the database
+        while (isIDExistsInDatabase(generatedID)) {
+            randomPart = 100000 + random.nextInt(900000);
+            generatedID = staticPart + "-" + formatter.format(now) + "-" + randomPart;
+        }
+
+        return generatedID;
+    }
+
+    private boolean isIDExistsInDatabase(String generatedID) {
+        for (Job job : database.getJobDB()) {
+            if (job.getJobID().equals(generatedID)) {
+                return true; // ID already exists
+            }
+        }
+        return false; // ID is unique
     }
 }
