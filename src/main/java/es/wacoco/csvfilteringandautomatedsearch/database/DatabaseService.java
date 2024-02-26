@@ -1,6 +1,7 @@
 package es.wacoco.csvfilteringandautomatedsearch.database;
 
 import es.wacoco.csvfilteringandautomatedsearch.model.Company;
+import es.wacoco.csvfilteringandautomatedsearch.model.Job;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,4 +16,5 @@ public class DatabaseService {
     public List<Company> getChosenCompanies() {
         return ChosenCompanies.getChosenCompanies();
     }
+
 }

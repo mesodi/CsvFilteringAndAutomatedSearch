@@ -14,4 +14,6 @@ public class Job {
     String dateCreated;
     String status;
     List<Company> companies;
+
+
 }
