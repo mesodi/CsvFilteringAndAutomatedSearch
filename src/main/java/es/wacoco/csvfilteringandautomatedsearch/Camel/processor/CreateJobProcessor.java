@@ -1,6 +1,6 @@
 package es.wacoco.csvfilteringandautomatedsearch.Camel.processor;
 
-import es.wacoco.csvfilteringandautomatedsearch.Camel.database.Database;
+import es.wacoco.csvfilteringandautomatedsearch.database.Database;
 import es.wacoco.csvfilteringandautomatedsearch.model.Company;
 import es.wacoco.csvfilteringandautomatedsearch.model.Job;
 import org.apache.camel.Exchange;

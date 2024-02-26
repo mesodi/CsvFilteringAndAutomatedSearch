@@ -1,6 +1,6 @@
 package es.wacoco.csvfilteringandautomatedsearch;
 
-import es.wacoco.csvfilteringandautomatedsearch.Camel.database.Database;
+import es.wacoco.csvfilteringandautomatedsearch.database.Database;
 import es.wacoco.csvfilteringandautomatedsearch.Camel.processor.CreateJobProcessor;
 import es.wacoco.csvfilteringandautomatedsearch.model.Company;
 import es.wacoco.csvfilteringandautomatedsearch.model.Job;
@@ -8,9 +8,7 @@ import org.apache.camel.Exchange;
 import org.apache.camel.Message;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.jupiter.api.BeforeAll;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;

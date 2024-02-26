@@ -1,4 +1,4 @@
-package es.wacoco.csvfilteringandautomatedsearch.Camel.database;
+package es.wacoco.csvfilteringandautomatedsearch.database;
 
 import es.wacoco.csvfilteringandautomatedsearch.model.Company;
 import es.wacoco.csvfilteringandautomatedsearch.model.InventorUrl;
