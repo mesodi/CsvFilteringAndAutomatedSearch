@@ -11,7 +11,12 @@ import java.util.List;
 
 
 public class Database {
+    public static final List<Company> companies = new ArrayList<>();
 
+    public static final List<Company> selectedCompanies = new ArrayList<>();
+
+    private static final List<Company> processedCompanies = new ArrayList<>();
+    private static final List<InventorUrl> inventorUrls = new ArrayList<>();
     ArrayList<Job> jobDB = new ArrayList<>();
 
     public void createJob(Job job) {
@@ -21,4 +26,30 @@ public class Database {
     public Job[] getJobDB() {
         return new Job[0];
     }
+
+    public static void addSelectedCompanies(List<Company> companies) {
+        selectedCompanies.clear();
+        selectedCompanies.addAll(companies);
+    }
+
+    public static List<Company> getSelectedCompanies() {
+        return new ArrayList<>(selectedCompanies);
+    }
+
+    public static void addProcessedCompanies(List<Company> companies) {
+        processedCompanies.clear();
+        processedCompanies.addAll(companies);
+    }
+    public static List<Company> getProcessedCompanies() {
+        return new ArrayList<>(processedCompanies);
+    }
+    public static void addInventorUrl(InventorUrl inventorUrl) {
+        inventorUrls.clear();
+        inventorUrls.add(inventorUrl);
+    }
+
+    public static List<InventorUrl> getInventorUrls() {
+        return new ArrayList<>(inventorUrls);
+    }
+
 }
