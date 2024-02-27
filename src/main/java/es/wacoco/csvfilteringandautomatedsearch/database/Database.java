@@ -17,4 +17,8 @@ public class Database {
     public void createJob(Job job) {
         jobDB.add(job);
     }
+
+    public Job[] getJobDB() {
+        return new Job[0];
+    }
 }
