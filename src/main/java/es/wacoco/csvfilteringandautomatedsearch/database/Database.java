@@ -12,12 +12,16 @@ import java.util.List;
 
 public class Database {
 
+    public ArrayList<Job> getJobDB() {
+        return jobDB;
+    }
+
     ArrayList<Job> jobDB = new ArrayList<>();
 
     public void createJob(Job job) {
         jobDB.add(job);
     }
-<<<<<<< HEAD
+
 
     public static final List<Company> companies = new ArrayList<>();
 
@@ -40,9 +44,10 @@ public class Database {
     }
     public static List<Company> getProcessedCompanies() {
         return new ArrayList<>(processedCompanies);
-=======
-    public List<Job> getJobDB() {
-        return jobDB;
->>>>>>> da897ad1d020dcb1af89fd77062f47d3f5e2bc17
+
+
+
+
+
     }
 }
