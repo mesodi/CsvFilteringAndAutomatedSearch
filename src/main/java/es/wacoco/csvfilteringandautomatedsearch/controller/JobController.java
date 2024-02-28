@@ -1,22 +1,37 @@
 package es.wacoco.csvfilteringandautomatedsearch.controller;
 
-import es.wacoco.csvfilteringandautomatedsearch.model.Company;
-import io.swagger.v3.oas.annotations.Operation;
-import org.apache.camel.ProducerTemplate;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import es.wacoco.csvfilteringandautomatedsearch.model.Job;
+import es.wacoco.csvfilteringandautomatedsearch.service.JobService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 public class JobController {
-    private ProducerTemplate producerTemplate;
-    @Operation(summary = "Create a New Job", description = "Create a new job for processing a list of companies")
-    @PostMapping("/createJob")
-    public String createJob(@RequestBody List<Company> companies){
-        producerTemplate.sendBody("direct:processManager", companies);
-        return "Job Created";
+
+    private final JobService jobService;
+
+    public JobController(JobService jobService) {
+        this.jobService = jobService;
+    }
+
+    @GetMapping("/jobs")
+    public ResponseEntity<List<Job>> getAllJobs() {
+        List<Job> jobs = jobService.getAllJobs();
+        if (jobs.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(jobs);
+    }
+
+    @GetMapping("/jobs/{jobId}")
+    public ResponseEntity<Job> getJobById(@PathVariable String jobId) {
+        Job job = jobService.getJob(jobId);
+        if (job == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(job);
     }
 
 

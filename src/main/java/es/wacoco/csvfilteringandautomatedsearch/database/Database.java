@@ -8,52 +8,30 @@ import lombok.Getter;
 import lombok.Setter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 
 public class Database {
     public static final List<Company> companies = new ArrayList<>();
+    private static final Map<String, List<InventorUrl>> inventorUrlsByJob = new ConcurrentHashMap<>();
 
 
-    public ArrayList<Job> getJobDB() {
-        return jobDB;
+    public static void addInventorUrl(String jobId, InventorUrl inventorUrl) {
+        inventorUrlsByJob.computeIfAbsent(jobId, k -> new CopyOnWriteArrayList<>()).add(inventorUrl);
     }
 
 
-    public static final List<Company> selectedCompanies = new ArrayList<>();
-
-    private static final List<Company> processedCompanies = new ArrayList<>();
-    private static final List<InventorUrl> inventorUrls = new ArrayList<>();
-
-    ArrayList<Job> jobDB = new ArrayList<>();
-
-    public void createJob(Job job) {
-        jobDB.add(job);
+    public static List<InventorUrl> getInventorUrlsForJob(String jobId) {
+        return inventorUrlsByJob.getOrDefault(jobId, new CopyOnWriteArrayList<>());
     }
 
-    public static void addSelectedCompanies(List<Company> companies) {
-        selectedCompanies.clear();
-        selectedCompanies.addAll(companies);
+    public static List<InventorUrl> getAllInventorUrlsWithJobId() {
+        List<InventorUrl> allInventorUrls = new ArrayList<>();
+        inventorUrlsByJob.forEach((jobId, inventorUrls) -> inventorUrls.forEach(inventorUrl -> {
+            allInventorUrls.add(new InventorUrl(inventorUrl.getInventor(), inventorUrl.getLinkedInUrl(), jobId));
+        }));
+        return allInventorUrls;
     }
-
-    public static List<Company> getSelectedCompanies() {
-        return new ArrayList<>(selectedCompanies);
-    }
-
-    public static void addProcessedCompanies(List<Company> companies) {
-        processedCompanies.clear();
-        processedCompanies.addAll(companies);
-    }
-    public static List<Company> getProcessedCompanies() {
-        return new ArrayList<>(processedCompanies);
-    }
-    
-    public static void addInventorUrl(InventorUrl inventorUrl) {
-        inventorUrls.clear();
-        inventorUrls.add(inventorUrl);
-    }
-
-    public static List<InventorUrl> getInventorUrls() {
-        return new ArrayList<>(inventorUrls);
-    }
-
 }

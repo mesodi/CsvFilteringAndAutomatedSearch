@@ -14,7 +14,7 @@ public class Patent {
     private String applicationNumber;
     private String title;
     private String abstractText;
-
+    private String linkedInUrls;
     public Patent() {
 
     }
