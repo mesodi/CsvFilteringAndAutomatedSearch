@@ -5,7 +5,7 @@ phases:
     commands:
       - echo Logging in to DockerHub
       - aws --version
-      - docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
+      - echo $DOCKERHUB_PASSWORD | docker login -u $DOCKERHUB_USERNAME --password-stdin
       - REPOSITORY_URI=bassam123/csvfilteringandautomatedsearch
 
   build:
