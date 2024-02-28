@@ -30,13 +30,6 @@ public class Database {
         jobDB.add(job);
     }
 
-
-    public static final List<Company> companies = new ArrayList<>();
-
-    public static final List<Company> selectedCompanies = new ArrayList<>();
-
-    private static final List<Company> processedCompanies = new ArrayList<>();
-
     public static void addSelectedCompanies(List<Company> companies) {
         selectedCompanies.clear();
         selectedCompanies.addAll(companies);
