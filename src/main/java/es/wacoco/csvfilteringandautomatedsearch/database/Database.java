@@ -52,29 +52,8 @@ public class Database {
     }
     public static List<Company> getProcessedCompanies() {
         return new ArrayList<>(processedCompanies);
-
-
-
-
-
     }
-
-    public static void addSelectedCompanies(List<Company> companies) {
-        selectedCompanies.clear();
-        selectedCompanies.addAll(companies);
-    }
-
-    public static List<Company> getSelectedCompanies() {
-        return new ArrayList<>(selectedCompanies);
-    }
-
-    public static void addProcessedCompanies(List<Company> companies) {
-        processedCompanies.clear();
-        processedCompanies.addAll(companies);
-    }
-    public static List<Company> getProcessedCompanies() {
-        return new ArrayList<>(processedCompanies);
-    }
+    
     public static void addInventorUrl(InventorUrl inventorUrl) {
         inventorUrls.clear();
         inventorUrls.add(inventorUrl);
