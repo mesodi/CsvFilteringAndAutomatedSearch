@@ -13,7 +13,8 @@ phases:
       - mvn clean install
       - echo Building Docker image
       - docker build -t REPOSITORY_URI:8 .
-      - docker push REPOSITORY_URI:8
+      - docker push docker.io/REPOSITORY_URI:8
+      - docker push $REPOSITORY_URI --all-tags
 
   post_build:
     commands:
