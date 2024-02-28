@@ -13,17 +13,17 @@ import java.util.List;
 public class Database {
     public static final List<Company> companies = new ArrayList<>();
 
-<<<<<<< HEAD
+
     public ArrayList<Job> getJobDB() {
         return jobDB;
     }
 
-=======
+
     public static final List<Company> selectedCompanies = new ArrayList<>();
 
     private static final List<Company> processedCompanies = new ArrayList<>();
     private static final List<InventorUrl> inventorUrls = new ArrayList<>();
->>>>>>> 4f53940ca1723e0111ed902a2e3c33c049f5c645
+
     ArrayList<Job> jobDB = new ArrayList<>();
 
     public void createJob(Job job) {
