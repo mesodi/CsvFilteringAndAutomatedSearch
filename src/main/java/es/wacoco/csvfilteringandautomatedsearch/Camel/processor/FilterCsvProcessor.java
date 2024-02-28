@@ -14,11 +14,12 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
- @Slf4j
+import java.util.stream.Collectors;
 
+@Slf4j
 public class FilterCsvProcessor implements Processor {
-
     @Override
     public void process(Exchange exchange) throws Exception {
         MultipartFile file = exchange.getIn().getBody(MultipartFile.class);
@@ -27,9 +28,7 @@ public class FilterCsvProcessor implements Processor {
         try (CSVParser parser = new CSVParser(new InputStreamReader(file.getInputStream()), CSVFormat.DEFAULT.withFirstRecordAsHeader().withIgnoreHeaderCase().withTrim())) {
             for (CSVRecord record : parser) {
                 String applicant = record.get("Applicants");
-                Company company = companies.computeIfAbsent(applicant, k -> new Company(applicant, "0", new ArrayList<>()));
-                int appearances = Integer.parseInt(company.getAppearances()) + 1;
-                company.setAppearances(String.valueOf(appearances));
+                Company company = companies.computeIfAbsent(applicant, k -> new Company(applicant));
 
                 Patent patent = new Patent();
                 patent.setInventors(record.get("Inventors"));
@@ -37,14 +36,18 @@ public class FilterCsvProcessor implements Processor {
                 patent.setApplicationNumber(record.get("Application Number"));
                 patent.setTitle(record.get("Title"));
                 patent.setAbstractText(record.get("Abstract"));
-                company.getPatents().add(patent);
+
+                company.addPatent(patent);
             }
         }
+        List<Company> sortedCompanies = companies.values().stream()
+                .sorted((c1, c2) -> Integer.compare(c2.getAppearances(), c1.getAppearances()))
+                .collect(Collectors.toList());
+
         Database.companies.clear();
-        Database.companies.addAll(companies.values());
+        Database.companies.addAll(sortedCompanies);
 
         log.info("Processed and stored {} companies.", companies.size());
-        exchange.getIn().setBody(new ArrayList<>(companies.values()));
+        exchange.getIn().setBody(sortedCompanies);
     }
-
 }
