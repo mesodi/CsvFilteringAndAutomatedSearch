@@ -2,6 +2,7 @@ package es.wacoco.csvfilteringandautomatedsearch.controller;
 
 import es.wacoco.csvfilteringandautomatedsearch.model.Job;
 import es.wacoco.csvfilteringandautomatedsearch.service.JobService;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,7 +16,7 @@ public class JobController {
     public JobController(JobService jobService) {
         this.jobService = jobService;
     }
-
+    @Operation(summary = "Get All Jobs", description = "Returns a list of all available jobs")
     @GetMapping("/jobs")
     public ResponseEntity<List<Job>> getAllJobs() {
         List<Job> jobs = jobService.getAllJobs();
@@ -24,7 +25,7 @@ public class JobController {
         }
         return ResponseEntity.ok(jobs);
     }
-
+    @Operation(summary ="Get Job by ID",description = "Returns the details of a job specified by its unique ID")
     @GetMapping("/jobs/{jobId}")
     public ResponseEntity<Job> getJobById(@PathVariable String jobId) {
         Job job = jobService.getJob(jobId);
