@@ -3,6 +3,7 @@ package es.wacoco.csvfilteringandautomatedsearch.controller;
 import es.wacoco.csvfilteringandautomatedsearch.database.Database;
 import es.wacoco.csvfilteringandautomatedsearch.model.InventorUrl;
 import es.wacoco.csvfilteringandautomatedsearch.model.Job;
+import es.wacoco.csvfilteringandautomatedsearch.model.JobStatus;
 import es.wacoco.csvfilteringandautomatedsearch.service.JobService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.ResponseEntity;
@@ -48,7 +49,7 @@ public class JobController {
     }
 
     @GetMapping("/jobs/{jobId}/status")
-    public ResponseEntity<Job.Status> getJobStatus(@PathVariable String jobId) {
+    public ResponseEntity<JobStatus> getJobStatus(@PathVariable String jobId) {
         Job job = jobService.getJob(jobId);
         if (job != null) {
             return ResponseEntity.ok(job.getCurrentStatus());

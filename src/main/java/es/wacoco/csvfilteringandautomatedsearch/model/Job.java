@@ -1,43 +1,29 @@
 package es.wacoco.csvfilteringandautomatedsearch.model;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 public class Job {
     private String jobID;
-    private String dateCreated;
-    private Status currentStatus;
-    private List<Company> companies;
-    public Job() {
+    private LocalDateTime dateCreated;
+    private JobStatus currentStatus;
+    private List<Company> companies = new ArrayList<>();
+
+    @JsonGetter("dateCreated")
+    public String getDateCreatedAsString(){
+        return dateCreated.format(DateTimeFormatter.ofPattern("yyyyMMdd-HH:mm"));
     }
 
-    public Job(String jobID, LocalDateTime dateTime, Status currentStatus, List<Company> companies) {
-        this.jobID = jobID;
-        this.dateCreated = dateTime.format(DateTimeFormatter.ofPattern("yyyyMMdd-HH:mm"));
-        this.currentStatus = currentStatus;
-        this.companies = companies;
-    }
-    public enum Status {
-        PROCESSING,
-        MANUAL,
-        DONE
-    }
-
-    @Override
-    public String toString() {
-        return "Job{" +
-                "jobID='" + jobID + '\'' +
-                ", dateCreated='" + dateCreated + '\'' +
-                ", currentStatus=" + currentStatus +
-                ", companies=" + companies +
-                '}';
-    }
 }

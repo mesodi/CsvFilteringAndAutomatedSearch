@@ -2,6 +2,7 @@ package es.wacoco.csvfilteringandautomatedsearch.service.impl;
 
 import es.wacoco.csvfilteringandautomatedsearch.model.Company;
 import es.wacoco.csvfilteringandautomatedsearch.model.Job;
+import es.wacoco.csvfilteringandautomatedsearch.model.JobStatus;
 import es.wacoco.csvfilteringandautomatedsearch.service.JobService;
 import org.apache.camel.ProducerTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +27,7 @@ public class JobServiceImpl implements JobService {
     public Job createAndProcessJob(List<Company> companies) {
         LocalDateTime now = LocalDateTime.now();
         String jobId = createJobID(now);
-        Job job = new Job(jobId, now.format(DateTimeFormatter.ofPattern("yyyyMMdd-HH:mm")), Job.Status.PROCESSING, companies);
+        Job job = new Job(jobId, now, JobStatus.PROCESSING, companies);
         jobs.put(job.getJobID(), job);
 
         producerTemplate.sendBodyAndHeader("direct:processSelected", companies, "jobId", jobId);
