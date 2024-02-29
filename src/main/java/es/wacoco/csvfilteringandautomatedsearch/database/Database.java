@@ -2,10 +2,6 @@ package es.wacoco.csvfilteringandautomatedsearch.database;
 
 import es.wacoco.csvfilteringandautomatedsearch.model.Company;
 import es.wacoco.csvfilteringandautomatedsearch.model.InventorUrl;
-import es.wacoco.csvfilteringandautomatedsearch.model.Job;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
