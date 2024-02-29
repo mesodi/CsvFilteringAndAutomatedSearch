@@ -16,7 +16,6 @@ public class Job {
     private String dateCreated;
     private Status currentStatus;
     private List<Company> companies;
-
     public Job() {
     }
 
@@ -30,5 +29,15 @@ public class Job {
         PROCESSING,
         MANUAL,
         DONE
+    }
+
+    @Override
+    public String toString() {
+        return "Job{" +
+                "jobID='" + jobID + '\'' +
+                ", dateCreated='" + dateCreated + '\'' +
+                ", currentStatus=" + currentStatus +
+                ", companies=" + companies +
+                '}';
     }
 }

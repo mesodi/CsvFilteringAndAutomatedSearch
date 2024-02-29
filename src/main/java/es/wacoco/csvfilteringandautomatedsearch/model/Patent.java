@@ -17,7 +17,7 @@ public class Patent {
     private String applicationNumber;
     private String title;
     private String abstractText;
-    private String linkedInUrls;
+    private List<String> linkedInUrls = new ArrayList<>();
     public Patent() {
 
     }

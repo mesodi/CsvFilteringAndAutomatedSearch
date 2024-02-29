@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patent Information</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+        }
+        h2 {
+            color: #333;
+            font-size: 22px;
+        }
+        input[type="file"] {
+            border: 1px solid #ccc;
+            display: inline-block;
+            padding: 6px 12px;
+            cursor: pointer; }
+        #selectedInfo {
+            margin: 5px 0;
+            padding: 20px;
+            background-color: #e7e7e7;
+            border-radius: 40px;
+            font-size: 18px;
+            text-align: center;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white; padding: 14px 20px;
+            margin: 8px 0; border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        div#applicantsList, div#processedApplicantsList {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        div#processedApplicantsList {
+            margin-left: 20px;
+        }
+        div#applicantsList h3, div#processedApplicantsList h3 {
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px; margin-bottom: 10px;
+        }
+        p { font-size: 14px;
+            color: #555;
+        }
+
+        .company-info-container {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-bottom: 5px;
+        }
+        .company-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+        .company-details {
+            flex-grow: 1;
+        }
+        .company-patents-count, .company-inventor-count {
+            flex-basis: 33%;
+            text-align: center;
+            background-color: #f0f0f0;
+
+        }
+        .toggle-details-btn {
+            margin-left: auto;
+        }
+        .hidden {
+            display: none;
+        }
+        .company-details-content {
+            padding-top: 10px;
+            border-top: 1px solid #ddd;
+        }
+        .company-inventors-count {
+            flex-basis: 20%; /* Adjust the width as necessary */
+            text-align: center; /* Center the text within the div */
+            padding: 5px 0; /* Add some padding for spacing */
+            margin: 0 10px; /* Add some margin for spacing */
+            border-radius: 4px; /* Rounded corners */
+        }
+        .job-detail {
+            background: #e8e8e8;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            font-family: 'Arial', sans-serif;
+        }
+
+        .job-detail p {
+            margin: 5px 0;
+            color: #333;
+            font-size: 16px; /* Adjust the font size*/
+        }
+
+        .job-detail span {
+            font-weight: bold;
+        }
+
+        .job-detail button {
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px; /* Adjust the font size as needed */
+        }
+
+        .job-detail button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+<h2>Upload CSV File</h2>
+<input type="file" id="fileInput" onchange="uploadFile()">
+<div id="selectedInfo">Applicants: 0,  |   Total Patents:  0,    |  Total Inventors:  0</div>
+<button id="processButton" onclick="processSelected()" disabled>Process Selected</button>
+<div style="display: flex;">
+
+    <div id="applicantsList" style="flex: 1;"></div>
+
+    <div id="processedApplicantsList" style="flex: 1; border-left: 2px solid black; padding-left: 20px;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h2>List of Jobs</h2>
+            <button id="exportButton" onclick="exportJobs()">Export</button>
+        </div>
+        <div id="jobInfo"></div>
+
+
+    </div>
+</div>
+
+
+<script>
+    let companies = [];
+    async function uploadFile() {
+        const fileInput = document.getElementById('fileInput');
+        if (fileInput.files.length === 0) {
+            alert('Please select a file to upload');
+            return;
+        }
+        const formData = new FormData();
+        formData.append('file', fileInput.files[0]);
+        try {
+            const response = await fetch('/upload', {
+                method: 'POST',
+                body: formData,
+            });
+
+            if (!response.ok) throw new Error('File upload failed');
+            alert('File uploaded successfully');
+            getAllCompanies(); // Refresh the list of companies after upload
+
+            // Clear the file input after successful upload
+            fileInput.value = ""; // This resets the file input
+        } catch (error) {
+            console.error('Error uploading file:', error);
+            alert(error.message);
+        }
+    }
+    function updateSelectedDisplay() {
+        const selectedCheckboxes = document.querySelectorAll('input[name="applicantCheck"]:checked');
+        let totalPatents = 0;
+        let totalInventors = 0;
+
+        selectedCheckboxes.forEach(checkbox => {
+            const index = checkbox.getAttribute('data-index');
+            totalPatents += companies[index].patents.length;
+            totalInventors += companies[index].inventorAppearances; // Assuming inventorAppearances is in your company object
+        });
+
+        document.getElementById('selectedInfo').innerText = `Applicants: ${selectedCheckboxes.length}, Total Patents: ${totalPatents}, Total Inventors: ${totalInventors}`;
+        document.getElementById('processButton').disabled = selectedCheckboxes.length === 0; // Enable the button if there are selected checkboxes
+    }
+
+    // Function to process selected companies and display initial job information
+    async function processSelected() {
+        const selectedCheckboxes = document.querySelectorAll('input[name="applicantCheck"]:checked');
+        const selectedCompanies = Array.from(selectedCheckboxes).map(checkbox => companies[checkbox.getAttribute('data-index')]);
+
+        try {
+            const processResponse = await fetch('/process-selected', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(selectedCompanies),
+            });
+
+            if (!processResponse.ok) throw new Error('Failed to process selected companies');
+            const job = await processResponse.json();
+            displayJobDetails(job); // Display initial job details
+            pollJobStatus(job.jobID); // Start polling for job status update
+        } catch (error) {
+            console.error('Error processing selected companies:', error);
+        }
+    }
+
+    function displayJobDetails(job) {
+        const jobsContainer = document.getElementById('jobInfo'); // Ensure this is the container for all jobs
+        const jobDetailDiv = document.createElement('div');
+        jobDetailDiv.classList.add('job-detail');
+        jobDetailDiv.setAttribute('id', `job-${job.jobID}`);
+        jobDetailDiv.innerHTML = `
+    <p>Job ID: ${job.jobID}</p>
+    <p>Date Created: ${job.dateCreated}</p>
+    <p>Status: <span id="status-${job.jobID}">${job.currentStatus}</span></p>
+    <button data-job-id="${job.jobID}" onclick="toggleJobDetails('${job.jobID}')">Show More</button>
+    <div id="jobDetails${job.jobID}" class="hidden"></div>
+`;
+
+
+        jobsContainer.prepend(jobDetailDiv); // Add the new job detail div to the top
+    }
+    // Function to poll job status from the backend
+    async function pollJobStatus(jobId) {
+        const statusSpan = document.getElementById(`status-${jobId}`);
+        try {
+            let jobStatus = 'PROCESSING'; // Initial job status
+            while (jobStatus === 'PROCESSING') {
+                const response = await fetch(`/jobs/${jobId}`);
+                if (!response.ok) throw new Error('Failed to fetch job details');
+                const jobDetails = await response.json();
+                jobStatus = jobDetails.currentStatus; // Update job status from the response
+                statusSpan.textContent = jobStatus; // Update the status in the UI
+                if (jobStatus !== 'PROCESSING') break; // Exit loop if status is not PROCESSING
+                await new Promise(resolve => setTimeout(resolve, 2000)); // Wait for 2 seconds before polling again
+            }
+        } catch (error) {
+            console.error('Error polling job status:', error);
+        }
+    }
+
+    // Function to toggle visibility of job details and fetch LinkedIn URLs for a given job ID
+    async function toggleJobDetails(jobId) {
+        const detailsDiv = document.getElementById(`jobDetails${jobId}`);
+        const button = document.querySelector(`button[data-job-id="${jobId}"]`); // Find the button that was clicked
+
+        if (!detailsDiv) {
+            console.error('Details div not found for jobId:', jobId);
+            return;
+        }
+
+        // Check if details are currently hidden
+        if (detailsDiv.classList.contains('hidden')) {
+            // Fetch job details including LinkedIn URLs using the jobId
+            try {
+                const response = await fetch(`/jobs/${jobId}`);
+                if (!response.ok) throw new Error('Failed to fetch job details');
+                const jobDetails = await response.json();
+
+                // Construct HTML content for job details
+                let detailsHtml = jobDetails.companies.map(company => `
+                <div>
+                    <h4>Applicant: ${company.applicant}</h4>
+                    ${company.patents.map(patent => `
+                        <div>
+                            <p>Application Date: ${patent.applicationDate}</p>
+                            <p>Application Number: ${patent.applicationNumber}</p>
+                            <p>Title: ${patent.title}</p>
+                            <p>Abstract: ${patent.abstractText}</p>
+                            <p>Inventor: ${patent.inventors}</p>
+                            ${patent.linkedInUrls ? patent.linkedInUrls.map(url => `<a href="${url}" target="_blank">${url}</a>`).join('<br>') : '<p>No LinkedIn URLs found.</p>'}
+                        </div>
+                    `).join('')}
+                </div>
+            `).join('');
+
+                detailsDiv.innerHTML = detailsHtml;
+                detailsDiv.classList.remove('hidden');
+                if (button) button.textContent = 'Show Less'; // Update button text to "Show Less"
+            } catch (error) {
+                console.error('Error fetching job details:', error);
+                detailsDiv.innerHTML = '<p>Error fetching job details.</p>';
+            }
+        } else {
+            // Hide the details and update the button text
+            detailsDiv.classList.add('hidden');
+            if (button) button.textContent = 'Show More'; // Update button text to "Show More"
+        }
+    }
+
+    async function getAllCompanies() {
+        try {
+            const response = await fetch('/all');
+            if (!response.ok) throw new Error('Failed to fetch data');
+
+            companies = await response.json(); // Store fetched data in the global companies array.
+            const applicantsList = document.getElementById('applicantsList');
+            applicantsList.innerHTML = ''; // Clear current list
+
+            companies.forEach((company, index) => {
+                const companyElement = document.createElement('div');
+                companyElement.className = 'company-info-container';
+                companyElement.innerHTML = `
+    <div class="company-header">
+        <div class="company-details">
+            <input type="checkbox" id="check${index}" name="applicantCheck" data-index="${index}">
+            <label for="check${index}"><strong>${company.applicant}</strong></label>
+        </div>
+        <div class="company-patents-count">Patents: ${company.patents.length}</div>
+        <div class="company-inventors-count">Inventors: ${company.inventorAppearances}</div> <!-- Add this line -->
+        <button class="toggle-details-btn" data-index="${index}" onclick="toggleDetails(${index})">Show More</button>
+    </div>
+    <div id="details${index}" class="hidden company-details-content">
+        ${company.patents.map(patent => `
+            <p>
+                Inventor: ${patent.inventors}<br>
+                Application Date: ${patent.applicationDate}<br>
+                Application Number: ${patent.applicationNumber}<br>
+                Title: ${patent.title}<br>
+                Abstract: ${patent.abstractText}
+                <br/> <hr>
+            </p>
+        `).join('')}
+    </div>`;
+                applicantsList.appendChild(companyElement);
+            });
+
+            document.querySelectorAll('input[name="applicantCheck"]').forEach(checkbox => {
+                checkbox.addEventListener('change', updateSelectedDisplay); // Attach event listener
+            });
+        } catch (error) {
+            console.error('Error fetching companies:', error);
+            alert(error.message);
+        }
+    }
+
+    function toggleDetails(index) {
+        const detailsDiv = document.getElementById(`details${index}`);
+        const button = document.querySelector(`button[data-index="${index}"]`); // Find the button that was clicked
+
+        if (detailsDiv.classList.contains('hidden')) {
+            detailsDiv.classList.remove('hidden');
+            button.textContent = 'Show Less'; // Change button text to "Show Less Info"
+        } else {
+            detailsDiv.classList.add('hidden');
+            button.textContent = 'Show More'; // Change button text to "Show More Info"
+        }
+    }
+    async function exportJobs() {
+        try {
+            // The fetch API does not directly support downloading files, so you need to
+            // fetch the response as a Blob, then create a URL for that blob and
+            // automatically trigger a download.
+
+            const response = await fetch('/inventor/all-linkedin');
+            if (!response.ok) throw new Error('Failed to export job data');
+
+            // Retrieve the blob which contains the CSV data
+            const blob = await response.blob();
+
+            // Create a temporary anchor element and trigger a download
+            const downloadUrl = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = downloadUrl;
+            a.download = "LinkedInUrls.csv"; // Name of the downloaded file
+            document.body.appendChild(a); // Append anchor to body.
+            a.click(); // Trigger a click on the element to open download dialog
+            window.URL.revokeObjectURL(downloadUrl); // Clean up the URL object
+            a.remove(); // Remove the anchor from the body
+        } catch (error) {
+            console.error('Error exporting jobs:', error);
+            alert('Failed to export data. Please try again.');
+        }
+    }
+
+    async function getAllJobs() {
+        try {
+            const response = await fetch('/jobs');
+            if (!response.ok) throw new Error('Failed to fetch jobs');
+
+            const jobs = await response.json();
+            const jobsContainer = document.getElementById('jobInfo');
+            jobsContainer.innerHTML = ''; // Clear existing jobs before displaying new ones
+
+            // Assuming the backend sends the newest jobs first, this will display each job in that order.
+            // Ensure the displayJobDetails function appends jobs to 'jobInfo' in the order they're processed.
+            jobs.forEach(job => displayJobDetails(job));
+        } catch (error) {
+            console.error('Error fetching jobs:', error);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        getAllCompanies();
+        getAllJobs();
+    });
+
+
+
+</script>
+</body>
+</html>

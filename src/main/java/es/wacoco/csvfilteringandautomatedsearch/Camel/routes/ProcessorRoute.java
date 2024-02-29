@@ -32,11 +32,12 @@ public class ProcessorRoute extends RouteBuilder {
                     exchange.getIn().setBody(job);
                 })
                 .process(new LinkedInUrlFinderProcessor())
-                .process(new WebsiteUrlFinderProcessor())
-                .process(new EmailExtractorProcessor())
+//                .process(new WebsiteUrlFinderProcessor())
+//                .process(new EmailExtractorProcessor())
 
                 .process(exchange -> {
                     Job job = exchange.getIn().getBody(Job.class);
+                    System.out.println(job);
                     job.setCurrentStatus(Job.Status.DONE);
                     jobService.updateJob(job);
                 });

@@ -47,6 +47,13 @@ public class JobController {
         return ResponseEntity.ok(inventorUrls);
     }
 
-
+    @GetMapping("/jobs/{jobId}/status")
+    public ResponseEntity<Job.Status> getJobStatus(@PathVariable String jobId) {
+        Job job = jobService.getJob(jobId);
+        if (job != null) {
+            return ResponseEntity.ok(job.getCurrentStatus());
+        }
+        return ResponseEntity.notFound().build();
+    }
 
 }
