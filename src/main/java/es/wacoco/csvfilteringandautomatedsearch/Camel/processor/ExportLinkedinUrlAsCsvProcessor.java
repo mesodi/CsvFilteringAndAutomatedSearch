@@ -1,35 +1,31 @@
 package es.wacoco.csvfilteringandautomatedsearch.Camel.processor;
 
+import es.wacoco.csvfilteringandautomatedsearch.database.Database;
 import es.wacoco.csvfilteringandautomatedsearch.model.InventorUrl;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 public class ExportLinkedinUrlAsCsvProcessor implements Processor {
 
-    private final List<InventorUrl> inventorUrls = new ArrayList<>();
     @Override
     public void process(Exchange exchange) throws Exception {
+        List<InventorUrl> inventorUrls = Database.getAllInventorUrlsWithJobId();
 
-        StringBuilder csvData = new StringBuilder();
-        for (InventorUrl inventorUrl : inventorUrls) {
-
-            String inventor = inventorUrl.getInventor();
-            String linkedInUrl = inventorUrl.getLinkedInUrl();
-
-            csvData.append(inventor).append(",").append(linkedInUrl).append("\n");
-        }
-
-        File directory = new File("data/outbox");
-        directory.mkdirs();
-
-        try (PrintWriter writer = new PrintWriter(new FileWriter(directory.getPath() + "/LinkedIUrls.csv"))) {
-            writer.write(csvData.toString());
+        if (inventorUrls.isEmpty()) {
+            log.warn("No inventor URLs found.");
+        } else {
+            StringBuilder csvData = new StringBuilder("JobID,Inventor,LinkedInUrl\n");
+            for (InventorUrl inventorUrl : inventorUrls) {
+                csvData.append(inventorUrl.getJobId()).append(",")
+                        .append(inventorUrl.getInventor()).append(",")
+                        .append(inventorUrl.getLinkedInUrl()).append("\n");
+            }
+            exchange.getIn().setBody(csvData.toString());
+            log.info("CSV data generated successfully.");
         }
     }
 }

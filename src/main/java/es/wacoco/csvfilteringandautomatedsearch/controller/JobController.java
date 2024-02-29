@@ -1,5 +1,7 @@
 package es.wacoco.csvfilteringandautomatedsearch.controller;
 
+import es.wacoco.csvfilteringandautomatedsearch.database.Database;
+import es.wacoco.csvfilteringandautomatedsearch.model.InventorUrl;
 import es.wacoco.csvfilteringandautomatedsearch.model.Job;
 import es.wacoco.csvfilteringandautomatedsearch.service.JobService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -33,6 +35,16 @@ public class JobController {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(job);
+    }
+
+    @Operation(summary = "Get Inventor URLs for Job", description = "Retrieves inventor URLs for a specific job")
+    @GetMapping("/inventor/{jobId}")
+    public ResponseEntity<List<InventorUrl>> getInventorUrlsForJob(@PathVariable String jobId) {
+        List<InventorUrl> inventorUrls = Database.getInventorUrlsForJob(jobId);
+        if (inventorUrls.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(inventorUrls);
     }
 
 

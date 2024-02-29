@@ -3,6 +3,7 @@ package es.wacoco.csvfilteringandautomatedsearch.Camel.routes;
 import es.wacoco.csvfilteringandautomatedsearch.Camel.processor.*;
 import es.wacoco.csvfilteringandautomatedsearch.model.Job;
 import es.wacoco.csvfilteringandautomatedsearch.service.JobService;
+import org.apache.camel.Exchange;
 import org.apache.camel.builder.RouteBuilder;
 import org.springframework.stereotype.Component;
 
@@ -40,8 +41,11 @@ public class ProcessorRoute extends RouteBuilder {
                     jobService.updateJob(job);
                 });
 
-        from("direct:exportLinkedinUrlAsCsvRoute")
-                .process(new ExportLinkedinUrlAsCsvProcessor());
+        from("direct:exportLinkedInUrls")
+                .process(new ExportLinkedinUrlAsCsvProcessor())
+                .setHeader(Exchange.CONTENT_TYPE, constant("text/csv"))
+                .setHeader(Exchange.HTTP_RESPONSE_CODE, constant(200))
+                .setHeader("Content-Disposition", simple("attachment; filename=LinkedInUrls.csv"));
 
 
     }

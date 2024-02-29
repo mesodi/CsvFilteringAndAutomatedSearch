@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
@@ -32,10 +31,8 @@ public class JobService {
         Job job = new Job(jobId, now.format(DateTimeFormatter.ofPattern("yyyyMMdd-HH:mm")), Job.Status.PROCESSING, companies);
         jobs.put(job.getJobID(), job);
 
-        // Asynchronously process the job to avoid blocking the controller thread
-        CompletableFuture.runAsync(() -> {
-            producerTemplate.sendBodyAndHeader("direct:processSelected", companies, "jobId", jobId);
-        });
+
+        producerTemplate.sendBodyAndHeader("direct:processSelected", companies, "jobId", jobId);
 
         return job;
     }
