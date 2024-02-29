@@ -38,17 +38,23 @@ public class LinkedInUrlFinderProcessor implements Processor {
                     linkedInUrls.add(url);
                 }
 
-                patent.setLinkedInUrls(String.valueOf(linkedInUrls));
+                patent.setLinkedInUrls((linkedInUrls));
+                log.info("LinkedIn URLs: {}", linkedInUrls);
             }
         }
         exchange.getIn().setBody(job);
     }
 
-    private String fetchFirstSearchResultUrl(String inventorName) throws IOException {
+    private String fetchFirstSearchResultUrl(String inventorName) {
         String query = "site:linkedin.com " + inventorName;
         String searchUrl = "https://www.google.com/search?q=" + URLEncoder.encode(query, StandardCharsets.UTF_8);
 
-        Document doc = Jsoup.connect(searchUrl).get();
+        Document doc = null;
+        try {
+            doc = Jsoup.connect(searchUrl).get();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         Elements links = doc.select("a[href]");
 
         for (Element link : links) {
