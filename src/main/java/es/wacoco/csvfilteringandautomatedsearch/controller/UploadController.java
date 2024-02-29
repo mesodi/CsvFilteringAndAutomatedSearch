@@ -9,6 +9,7 @@ import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.ProducerTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,6 +27,7 @@ public class UploadController {
     private final CompanyService companyService;
     private final ProducerTemplate producerTemplate;
 
+    @Autowired
 
     public UploadController(JobService jobService, CompanyService companyService, ProducerTemplate producerTemplate) {
         this.jobService = jobService;
@@ -56,6 +58,7 @@ public class UploadController {
     public List<Company> getAllCompanies() {
         return companyService.getAllCompanies();
     }
+
 
 
     @Operation(summary = "Get All Inventor URLs with Job ID", description = "Retrieves all inventor URLs with corresponding job IDs")

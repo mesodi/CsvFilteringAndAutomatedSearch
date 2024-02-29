@@ -2,7 +2,8 @@ package es.wacoco.csvfilteringandautomatedsearch.Camel.routes;
 
 import es.wacoco.csvfilteringandautomatedsearch.Camel.processor.*;
 import es.wacoco.csvfilteringandautomatedsearch.model.Job;
-import es.wacoco.csvfilteringandautomatedsearch.service.JobService;
+import es.wacoco.csvfilteringandautomatedsearch.model.JobStatus;
+import es.wacoco.csvfilteringandautomatedsearch.service.impl.JobServiceImpl;
 import org.apache.camel.Exchange;
 import org.apache.camel.builder.RouteBuilder;
 import org.springframework.stereotype.Component;
@@ -10,11 +11,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class ProcessorRoute extends RouteBuilder {
 
-    private final JobService jobService;
+    private final JobServiceImpl jobServiceImpl;
 
-    public ProcessorRoute(JobService jobService) {
-        this.jobService = jobService;
+    public ProcessorRoute(JobServiceImpl jobServiceImpl) {
+        this.jobServiceImpl = jobServiceImpl;
     }
+
 
     @Override
     public void configure() {
@@ -28,17 +30,18 @@ public class ProcessorRoute extends RouteBuilder {
         from("direct:processSelected")
                 .process(exchange -> {
                     String jobId = exchange.getIn().getHeader("jobId", String.class);
-                    Job job = jobService.getJob(jobId);
+                    Job job = jobServiceImpl.getJob(jobId);
                     exchange.getIn().setBody(job);
                 })
                 .process(new LinkedInUrlFinderProcessor())
-                .process(new WebsiteUrlFinderProcessor())
-                .process(new EmailExtractorProcessor())
+//                .process(new WebsiteUrlFinderProcessor())
+//                .process(new EmailExtractorProcessor())
 
                 .process(exchange -> {
                     Job job = exchange.getIn().getBody(Job.class);
-                    job.setCurrentStatus(Job.Status.DONE);
-                    jobService.updateJob(job);
+                    System.out.println(job);
+                    job.setCurrentStatus(JobStatus.DONE);
+                    jobServiceImpl.updateJob(job);
                 });
 
         from("direct:exportLinkedInUrls")
