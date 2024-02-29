@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.ProducerTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -31,6 +32,19 @@ public class UploadController {
         this.companyService = companyService;
         this.producerTemplate = producerTemplate;
     }
+
+    @PostMapping("/upload")
+    public String uploadFile(@RequestParam("file") MultipartFile file) {
+        try {
+            producerTemplate.sendBody("direct:csvFilteringRoute", file);
+            log.info("File uploaded successfully: {}", file.getOriginalFilename());
+            return "File uploaded successfully";
+        } catch (Exception e) {
+            log.error("Error uploading file: {}", e.getMessage(), e);
+            return "Error uploading file: " + e.getMessage();
+        }
+    }
+
     @Operation(summary = "Upload CSV File", description = "Uploads a CSV file for filtering")
     @PostMapping("/process-selected")
     public ResponseEntity<Job> processSelectedCompanies(@RequestBody List<Company> selectedCompanies) {
