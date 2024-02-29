@@ -36,7 +36,7 @@ public class UploadController {
     public List<Company> getAllCompanies() {
         return companyService.getAllCompanies();
     }
-
+    @Operation(summary = "Get Inventor URLs for Job", description = "Retrieves inventor URLs for a specific job")
     @GetMapping("/inventor/{jobId}")
     public ResponseEntity<List<InventorUrl>> getInventorUrlsForJob(@PathVariable String jobId) {
         List<InventorUrl> inventorUrls = Database.getInventorUrlsForJob(jobId);
@@ -45,6 +45,7 @@ public class UploadController {
         }
         return ResponseEntity.ok(inventorUrls);
     }
+    @Operation(summary = "Get All Inventor URLs with Job ID", description = "Retrieves all inventor URLs with corresponding job IDs")
     @GetMapping("/inventor/all-linkedin")
     public ResponseEntity<List<InventorUrl>> getAllInventorUrlsWithJobId() {
         List<InventorUrl> inventorUrlsWithJobId = Database.getAllInventorUrlsWithJobId();
