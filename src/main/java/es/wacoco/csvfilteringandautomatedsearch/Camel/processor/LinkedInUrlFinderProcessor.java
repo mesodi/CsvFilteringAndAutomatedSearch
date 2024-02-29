@@ -38,7 +38,7 @@ public class LinkedInUrlFinderProcessor implements Processor {
                     linkedInUrls.add(url);
                 }
 
-                patent.setLinkedInUrls((linkedInUrls));
+                patent.setLinkedInUrls(String.valueOf((linkedInUrls)));
                 log.info("LinkedIn URLs: {}", linkedInUrls);
             }
         }
