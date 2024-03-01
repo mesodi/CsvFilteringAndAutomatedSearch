@@ -16,6 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Job {
+
     private String jobID;
     private LocalDateTime dateCreated;
     private JobStatus currentStatus;
