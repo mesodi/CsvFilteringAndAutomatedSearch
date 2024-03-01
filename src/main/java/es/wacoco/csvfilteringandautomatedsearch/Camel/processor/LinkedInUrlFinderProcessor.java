@@ -1,8 +1,9 @@
 package es.wacoco.csvfilteringandautomatedsearch.Camel.processor;
 
-import es.wacoco.csvfilteringandautomatedsearch.database.Database;
+import es.wacoco.csvfilteringandautomatedsearch.repository.Repository;
 import es.wacoco.csvfilteringandautomatedsearch.model.Company;
 import es.wacoco.csvfilteringandautomatedsearch.model.InventorUrl;
+import es.wacoco.csvfilteringandautomatedsearch.model.Job;
 import es.wacoco.csvfilteringandautomatedsearch.model.Patent;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.Exchange;
@@ -15,37 +16,45 @@ import org.jsoup.select.Elements;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 
 
 @Slf4j
 public class LinkedInUrlFinderProcessor implements Processor {
-    @Override
-    public void process(Exchange exchange) throws Exception {
-        @SuppressWarnings("unchecked")
-        List<Company> companies = exchange.getIn().getBody(List.class);
 
-        for (Company company : companies) {
+
+    public void process(Exchange exchange) {
+        Job job = exchange.getIn().getBody(Job.class);
+        for (Company company : job.getCompanies()) {
             for (Patent patent : company.getPatents()) {
-
+                List<String> linkedInUrls = new ArrayList<>();
                 String[] inventors = patent.getInventors().split(";;");
-                for (String inv : inventors) {
-                    String trimmedInventor = inv.trim();
-
+                for (String inventor : inventors) {
+                    String trimmedInventor = inventor.trim();
                     String url = fetchFirstSearchResultUrl(trimmedInventor);
-                    InventorUrl inventorUrl = new InventorUrl(trimmedInventor, url);
-                    Database.addInventorUrl(inventorUrl);
+                    InventorUrl inventorUrl = new InventorUrl(trimmedInventor, url, job.getJobID());
+                    Repository.addInventorUrl(job.getJobID(), inventorUrl);
+                    linkedInUrls.add(url);
                 }
+
+                patent.setLinkedInUrls((linkedInUrls));
+                log.info("LinkedIn URLs: {}", linkedInUrls);
             }
         }
-        exchange.getIn().setBody(companies);
+        exchange.getIn().setBody(job);
     }
 
-    private String fetchFirstSearchResultUrl(String inventorName) throws IOException {
+    private String fetchFirstSearchResultUrl(String inventorName) {
         String query = "site:linkedin.com " + inventorName;
         String searchUrl = "https://www.google.com/search?q=" + URLEncoder.encode(query, StandardCharsets.UTF_8);
 
-        Document doc = Jsoup.connect(searchUrl).get();
+        Document doc = null;
+        try {
+            doc = Jsoup.connect(searchUrl).get();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         Elements links = doc.select("a[href]");
 
         for (Element link : links) {

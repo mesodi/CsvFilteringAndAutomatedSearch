@@ -5,6 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -14,7 +17,7 @@ public class Patent {
     private String applicationNumber;
     private String title;
     private String abstractText;
-
+    private List<String> linkedInUrls = new ArrayList<>();
     public Patent() {
 
     }
