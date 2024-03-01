@@ -47,7 +47,7 @@ public class JobController {
         }
         return ResponseEntity.ok(inventorUrls);
     }
-
+@Operation(summary = "Get Job Status", description = "Returns the current status of a job specified by unique ID")
     @GetMapping("/jobs/{jobId}/status")
     public ResponseEntity<JobStatus> getJobStatus(@PathVariable String jobId) {
         Job job = jobService.getJob(jobId);

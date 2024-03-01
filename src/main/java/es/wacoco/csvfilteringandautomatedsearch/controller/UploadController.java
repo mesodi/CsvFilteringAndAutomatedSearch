@@ -46,7 +46,6 @@ public class UploadController {
             return "Error uploading file: " + e.getMessage();
         }
     }
-
     @Operation(summary = "Upload CSV File", description = "Uploads a CSV file for filtering")
     @PostMapping("/process-selected")
     public ResponseEntity<Job> processSelectedCompanies(@RequestBody List<Company> selectedCompanies) {
