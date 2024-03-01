@@ -128,6 +128,17 @@
         .job-detail button:hover {
             background-color: #45a049;
         }
+        .company-details-content span, .company-details-content p {
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .company-details-content strong {
+            font-weight: bold;
+        }
+
     </style>
 </head>
 <body>
@@ -273,11 +284,12 @@
                     <h4>Applicant: ${company.applicant}</h4>
                     ${company.patents.map(patent => `
                         <div>
-                            <p>Application Date: ${patent.applicationDate}</p>
-                            <p>Application Number: ${patent.applicationNumber}</p>
-                            <p>Title: ${patent.title}</p>
-                            <p>Abstract: ${patent.abstractText}</p>
-                            <p>Inventor: ${patent.inventors}</p>
+                            <div>
+                        <span><strong>Application Number:</strong> ${patent.applicationNumber}</span><br/>
+                        <span><strong>Application Date:</strong> ${patent.applicationDate}</span><br/>
+                        <span><strong>Inventor:</strong> ${patent.inventors}</span><br/>
+                        <p><strong>Title:</strong> ${patent.title}</p>
+                        <p><strong>Abstract:</strong> ${patent.abstractText}</p>
                             ${patent.linkedInUrls ? patent.linkedInUrls.map(url => `<a href="${url}" target="_blank">${url}</a>`).join('<br>') : '<p>No LinkedIn URLs found.</p>'}
                         </div>
                     `).join('')}
@@ -321,16 +333,16 @@
         <button class="toggle-details-btn" data-index="${index}" onclick="toggleDetails(${index})">Show More</button>
     </div>
     <div id="details${index}" class="hidden company-details-content">
-        ${company.patents.map(patent => `
-            <p>
-                Inventor: ${patent.inventors}<br>
-                Application Date: ${patent.applicationDate}<br>
-                Application Number: ${patent.applicationNumber}<br>
-                Title: ${patent.title}<br>
-                Abstract: ${patent.abstractText}
-                <br/> <hr>
-            </p>
-        `).join('')}
+           ${company.patents.map(patent => `
+        <p>
+            <span><strong>Application Number:</strong> ${patent.applicationNumber}</span><br/>
+            <span><strong>Application Date:</strong> ${patent.applicationDate}</span><br/>
+            <span><strong>Inventor:</strong> ${patent.inventors}</span><br/>
+            <p><strong>Title:</strong> ${patent.title}</p>
+            <p><strong>Abstract:</strong> ${patent.abstractText}</p>
+            <br/><hr>
+        </p>
+    `).join('')}
     </div>`;
                 applicantsList.appendChild(companyElement);
             });
