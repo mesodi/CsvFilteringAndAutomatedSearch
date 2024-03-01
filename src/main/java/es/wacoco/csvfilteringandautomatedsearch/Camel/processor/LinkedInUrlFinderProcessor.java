@@ -1,6 +1,6 @@
 package es.wacoco.csvfilteringandautomatedsearch.Camel.processor;
 
-import es.wacoco.csvfilteringandautomatedsearch.database.Database;
+import es.wacoco.csvfilteringandautomatedsearch.repository.Repository;
 import es.wacoco.csvfilteringandautomatedsearch.model.Company;
 import es.wacoco.csvfilteringandautomatedsearch.model.InventorUrl;
 import es.wacoco.csvfilteringandautomatedsearch.model.Job;
@@ -24,7 +24,7 @@ import java.util.List;
 public class LinkedInUrlFinderProcessor implements Processor {
 
 
-    public void process(Exchange exchange) throws Exception {
+    public void process(Exchange exchange) {
         Job job = exchange.getIn().getBody(Job.class);
         for (Company company : job.getCompanies()) {
             for (Patent patent : company.getPatents()) {
@@ -34,7 +34,7 @@ public class LinkedInUrlFinderProcessor implements Processor {
                     String trimmedInventor = inventor.trim();
                     String url = fetchFirstSearchResultUrl(trimmedInventor);
                     InventorUrl inventorUrl = new InventorUrl(trimmedInventor, url, job.getJobID());
-                    Database.addInventorUrl(job.getJobID(), inventorUrl);
+                    Repository.addInventorUrl(job.getJobID(), inventorUrl);
                     linkedInUrls.add(url);
                 }
 

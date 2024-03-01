@@ -1,4 +1,4 @@
-package es.wacoco.csvfilteringandautomatedsearch.database;
+package es.wacoco.csvfilteringandautomatedsearch.repository;
 
 import es.wacoco.csvfilteringandautomatedsearch.model.Company;
 import es.wacoco.csvfilteringandautomatedsearch.model.InventorUrl;
@@ -10,7 +10,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
 
-public class Database {
+public class Repository {
     public static final List<Company> companies = new ArrayList<>();
     private static final Map<String, List<InventorUrl>> inventorUrlsByJob = new ConcurrentHashMap<>();
 

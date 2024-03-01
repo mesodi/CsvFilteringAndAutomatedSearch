@@ -1,6 +1,6 @@
 package es.wacoco.csvfilteringandautomatedsearch.Camel.processor;
 
-import es.wacoco.csvfilteringandautomatedsearch.database.Database;
+import es.wacoco.csvfilteringandautomatedsearch.repository.Repository;
 import es.wacoco.csvfilteringandautomatedsearch.model.Company;
 import es.wacoco.csvfilteringandautomatedsearch.model.Patent;
 import lombok.extern.slf4j.Slf4j;
@@ -43,8 +43,8 @@ public class FilterCsvProcessor implements Processor {
                 .sorted((c1, c2) -> Integer.compare(c2.getAppearances(), c1.getAppearances()))
                 .collect(Collectors.toList());
 
-        Database.companies.clear();
-        Database.companies.addAll(sortedCompanies);
+        Repository.companies.clear();
+        Repository.companies.addAll(sortedCompanies);
 
         log.info("Processed and stored {} companies.", companies.size());
         exchange.getIn().setBody(sortedCompanies);

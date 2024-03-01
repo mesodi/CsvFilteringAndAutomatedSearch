@@ -1,6 +1,6 @@
 package es.wacoco.csvfilteringandautomatedsearch.service.impl;
 
-import es.wacoco.csvfilteringandautomatedsearch.database.Database;
+import es.wacoco.csvfilteringandautomatedsearch.repository.Repository;
 import es.wacoco.csvfilteringandautomatedsearch.model.Company;
 import es.wacoco.csvfilteringandautomatedsearch.service.CompanyService;
 import org.springframework.stereotype.Service;
@@ -18,6 +18,6 @@ public class CompanyServiceImpl implements CompanyService {
 
     @Override
     public List<Company> getAllCompanies() {
-        return new ArrayList<>(Database.companies);
+        return new ArrayList<>(Repository.companies);
     }
 }

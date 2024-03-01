@@ -1,6 +1,6 @@
 package es.wacoco.csvfilteringandautomatedsearch.Camel.processor;
 
-import es.wacoco.csvfilteringandautomatedsearch.database.Database;
+import es.wacoco.csvfilteringandautomatedsearch.repository.Repository;
 import es.wacoco.csvfilteringandautomatedsearch.model.InventorUrl;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.Exchange;
@@ -13,7 +13,7 @@ public class ExportLinkedinUrlAsCsvProcessor implements Processor {
 
     @Override
     public void process(Exchange exchange) throws Exception {
-        List<InventorUrl> inventorUrls = Database.getAllInventorUrlsWithJobId();
+        List<InventorUrl> inventorUrls = Repository.getAllInventorUrlsWithJobId();
 
         if (inventorUrls.isEmpty()) {
             log.warn("No inventor URLs found.");
