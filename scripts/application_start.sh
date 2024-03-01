@@ -20,4 +20,4 @@ cd /home/ec2-user/
 
 
 
-docker run -d --name automated-search -p 80:8080 merum/automated-search:02
+docker run -d --name automated-search -p 80:8080 merum/automated-search:010

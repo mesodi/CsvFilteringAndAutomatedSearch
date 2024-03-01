@@ -11,8 +11,8 @@ phases:
     commands:
       - mvn clean install
       - echo Building Docker image
-      - docker build -t merum/automated-search:02 .
-      - docker push merum/automated-search:02
+      - docker build -t merum/automated-search:010 .
+      - docker push merum/automated-search:010
 
   post_build:
     commands:
