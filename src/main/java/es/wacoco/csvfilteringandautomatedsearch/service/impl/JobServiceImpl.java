@@ -53,7 +53,7 @@ public class JobServiceImpl implements JobService {
     }
 
     private String createJobID(LocalDateTime dateTime) {
-        String formattedDate = dateTime.format(DateTimeFormatter.ofPattern("yyyyMMddHHmm"));
+        String formattedDate = dateTime.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
         String uniqueKey = UUID.randomUUID().toString().substring(0, 8).toUpperCase();
         return "QRY-" + formattedDate + "-" + uniqueKey;
     }

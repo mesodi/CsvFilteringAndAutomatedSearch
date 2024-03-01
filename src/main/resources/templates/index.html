@@ -206,6 +206,8 @@
 
     // Function to process selected companies and display initial job information
     async function processSelected() {
+        const placeholderJobId = displayPlaceholderJob(); // Display placeholder job and get its temporary ID
+
         const selectedCheckboxes = document.querySelectorAll('input[name="applicantCheck"]:checked');
         const selectedCompanies = Array.from(selectedCheckboxes).map(checkbox => companies[checkbox.getAttribute('data-index')]);
 
@@ -218,11 +220,69 @@
 
             if (!processResponse.ok) throw new Error('Failed to process selected companies');
             const job = await processResponse.json();
-            displayJobDetails(job); // Display initial job details
-            pollJobStatus(job.jobID); // Start polling for job status update
+
+            // Start polling for job status using the actual job ID
+            pollJobStatus(job.jobID, placeholderJobId);
         } catch (error) {
             console.error('Error processing selected companies:', error);
         }
+    }
+
+    // Function to display a placeholder job and return its temporary ID
+    function displayPlaceholderJob() {
+        const tempJobId = `temp-${Date.now()}`;
+        const jobsContainer = document.getElementById('jobInfo');
+        const jobDetailDiv = document.createElement('div');
+        jobDetailDiv.classList.add('job-detail');
+        jobDetailDiv.setAttribute('id', `job-${tempJobId}`);
+        jobDetailDiv.innerHTML = `
+        <p>Job ID: Creating job ID...</p>
+        <p>Date Created: ${new Date().toLocaleString()}</p>
+        <p>Status: <span>PROCESS</span></p>
+        <button onclick="alert('Details loading...')">Show More</button>
+    `;
+        jobsContainer.prepend(jobDetailDiv);
+        return tempJobId;
+    }
+
+    // Function to update job details from a placeholder or display new job details
+    async function updateJobDetails(job, placeholderJobId) {
+        const jobDetailDiv = document.getElementById(`job-${placeholderJobId}`);
+        if (jobDetailDiv) {
+            // Update the placeholder div with actual job details
+            jobDetailDiv.setAttribute('id', `job-${job.jobID}`);
+            jobDetailDiv.innerHTML = `
+            <p>Job ID: ${job.jobID}</p>
+            <p>Date Created: ${job.dateCreated}</p>
+            <p>Status: <span>${job.currentStatus}</span></p>
+            <button data-job-id="${job.jobID}" onclick="toggleJobDetails('${job.jobID}')">Show More</button>
+            <div id="jobDetails${job.jobID}" class="hidden"></div>
+        `;
+        }
+    }
+
+    async function pollJobStatus(jobId, placeholderJobId) {
+        let jobStatus = 'PROCESSING';
+        const statusSpan = document.getElementById(`job-${placeholderJobId}`).querySelector('span');
+        statusSpan.textContent = jobStatus; // Initially set to PROCESSING
+
+        do {
+            const response = await fetch(`/jobs/${jobId}/status`);
+            if (!response.ok) throw new Error('Failed to fetch job status');
+            const { currentStatus } = await response.json();
+            jobStatus = currentStatus;
+            statusSpan.textContent = jobStatus; // Update the UI with the current status
+
+            if (jobStatus !== 'PROCESSING') {
+                // Once the job status is no longer PROCESSING, fetch and display the final job details
+                const finalJobResponse = await fetch(`/jobs/${jobId}`);
+                const finalJobDetails = await finalJobResponse.json();
+                updateJobDetails(finalJobDetails, placeholderJobId);
+            } else {
+                // Continue polling if the status is still PROCESSING
+                await new Promise(resolve => setTimeout(resolve, 2000));
+            }
+        } while (jobStatus === 'PROCESSING');
     }
 
     function displayJobDetails(job) {
@@ -238,27 +298,11 @@
     <div id="jobDetails${job.jobID}" class="hidden"></div>
 `;
 
+        jobsContainer.prepend(jobDetailDiv);
+    }
 
-        jobsContainer.prepend(jobDetailDiv); // Add the new job detail div to the top
-    }
-    // Function to poll job status from the backend
-    async function pollJobStatus(jobId) {
-        const statusSpan = document.getElementById(`status-${jobId}`);
-        try {
-            let jobStatus = 'PROCESSING'; // Initial job status
-            while (jobStatus === 'PROCESSING') {
-                const response = await fetch(`/jobs/${jobId}`);
-                if (!response.ok) throw new Error('Failed to fetch job details');
-                const jobDetails = await response.json();
-                jobStatus = jobDetails.currentStatus; // Update job status from the response
-                statusSpan.textContent = jobStatus; // Update the status in the UI
-                if (jobStatus !== 'PROCESSING') break; // Exit loop if status is not PROCESSING
-                await new Promise(resolve => setTimeout(resolve, 2000)); // Wait for 2 seconds before polling again
-            }
-        } catch (error) {
-            console.error('Error polling job status:', error);
-        }
-    }
+
+
 
     // Function to toggle visibility of job details and fetch LinkedIn URLs for a given job ID
     async function toggleJobDetails(jobId) {
@@ -404,8 +448,6 @@
             const jobsContainer = document.getElementById('jobInfo');
             jobsContainer.innerHTML = ''; // Clear existing jobs before displaying new ones
 
-            // Assuming the backend sends the newest jobs first, this will display each job in that order.
-            // Ensure the displayJobDetails function appends jobs to 'jobInfo' in the order they're processed.
             jobs.forEach(job => displayJobDetails(job));
         } catch (error) {
             console.error('Error fetching jobs:', error);

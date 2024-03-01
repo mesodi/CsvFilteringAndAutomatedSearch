@@ -55,6 +55,7 @@ public class LinkedInUrlFinderProcessor implements Processor {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
         Elements links = doc.select("a[href]");
 
         for (Element link : links) {
